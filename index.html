@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tap and Reveal Activity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* Brand Colors: 
+           #1f2a52 (Midnight Blue)
+           #00bec7 (Teal)
+           #d2f0f0 (Light Aqua)
+           #abb5bf (Slate Grey)
+        */
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1f2a52;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .activity-card {
+            max-width: 900px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(31, 42, 82, 0.1);
+            overflow: hidden;
+            border: 1px solid #d2f0f0;
+        }
+
+        .header-bar {
+            background-color: #1f2a52;
+            padding: 1.5rem 2.5rem;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            padding: 2.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .reveal-item {
+            aspect-ratio: 16/10;
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+            background-color: #f1f5f9;
+            cursor: pointer;
+            border: 1px solid #d2f0f0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .reveal-item:hover {
+            transform: scale(1.02);
+            border-color: #00bec7;
+        }
+
+        /* The Visual Layer (Title below Plus Sign) */
+        .visual-layer {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            gap: 1rem; /* Spacing between plus and heading */
+        }
+
+        .category-title {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: #1f2a52;
+            text-align: center;
+            max-width: 90%;
+            line-height: 1.2;
+        }
+
+        /* Plus Icon (Now inside Flex layout) */
+        .plus-button {
+            width: 56px;
+            height: 56px;
+            background-color: #00bec7;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.25rem;
+            font-weight: 400;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0, 190, 199, 0.4);
+            pointer-events: none;
+        }
+
+        .reveal-item:hover .plus-button {
+            background-color: #1f2a52;
+            transform: scale(1.1);
+        }
+
+        .reveal-item.active .plus-button {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        /* The Info Panel (Slides up) */
+        .info-panel {
+            position: absolute;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #d2f0f0; 
+            color: #1f2a52;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2rem;
+            transition: bottom 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 20;
+        }
+
+        .reveal-item.active .info-panel {
+            bottom: 0;
+        }
+
+        .info-panel h3 {
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: #1f2a52;
+            border-bottom: 2px solid #00bec7;
+            padding-bottom: 0.25rem;
+            width: fit-content;
+        }
+
+        .info-panel ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-panel li {
+            margin-bottom: 0.4rem;
+            position: relative;
+            padding-left: 1.25rem;
+            line-height: 1.4;
+            font-size: 0.9rem;
+        }
+
+        .info-panel li::before {
+            content: "•";
+            color: #00bec7;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+            font-size: 1.1rem;
+        }
+
+        .close-hint {
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            color: #abb5bf;
+            font-style: italic;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="activity-card">
+        <div class="header-bar">
+            <h1 class="text-2xl font-bold uppercase tracking-wide">Tap and Reveal</h1>
+        </div>
+
+        <div class="grid-container">
+            <!-- Item 1 (Top Left) -->
+            <div class="reveal-item" onclick="toggleReveal(this)">
+                <div class="visual-layer">
+                    <div class="plus-button">+</div>
+                    <span class="category-title">Lorem Ipsum One</span>
+                </div>
+                <div class="info-panel">
+                    <h3>Lorem Ipsum</h3>
+                    <ul>
+                        <li>Consectetur adipiscing elit.</li>
+                        <li>Sed do eiusmod tempor.</li>
+                        <li>Incididunt ut labore et dolore.</li>
+                        <li>Magna aliqua ut enim ad.</li>
+                    </ul>
+                    <p class="close-hint">Tap to close</p>
+                </div>
+            </div>
+
+            <!-- Item 2 (Top Right) -->
+            <div class="reveal-item" onclick="toggleReveal(this)">
+                <div class="visual-layer">
+                    <div class="plus-button">+</div>
+                    <span class="category-title">Lorem Ipsum Two</span>
+                </div>
+                <div class="info-panel">
+                    <h3>Dolor Sit Amet</h3>
+                    <ul>
+                        <li>Quis nostrud exercitation.</li>
+                        <li>Laboris nisi ut aliquip.</li>
+                        <li>Commodo consequat duis.</li>
+                        <li>Irure dolor in reprehenderit.</li>
+                    </ul>
+                    <p class="close-hint">Tap to close</p>
+                </div>
+            </div>
+
+            <!-- Item 3 (Bottom Left) -->
+            <div class="reveal-item" onclick="toggleReveal(this)">
+                <div class="visual-layer">
+                    <div class="plus-button">+</div>
+                    <span class="category-title">Lorem Ipsum Three</span>
+                </div>
+                <div class="info-panel">
+                    <h3>Adipiscing Elit</h3>
+                    <ul>
+                        <li>Voluptate velit esse cillum.</li>
+                        <li>Dolore eu fugiat nulla.</li>
+                        <li>Excepteur sint occaecat.</li>
+                        <li>Non proident sunt in culpa.</li>
+                    </ul>
+                    <p class="close-hint">Tap to close</p>
+                </div>
+            </div>
+
+            <!-- Item 4 (Bottom Right) -->
+            <div class="reveal-item" onclick="toggleReveal(this)">
+                <div class="visual-layer">
+                    <div class="plus-button">+</div>
+                    <span class="category-title">Lorem Ipsum Four</span>
+                </div>
+                <div class="info-panel">
+                    <h3>Tempor Incididunt</h3>
+                    <ul>
+                        <li>Ut labore et dolore magna.</li>
+                        <li>Aliqua ut enim ad minim.</li>
+                        <li>Quis nostrud exercitation.</li>
+                        <li>Ullamco laboris nisi.</li>
+                    </ul>
+                    <p class="close-hint">Tap to close</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleReveal(element) {
+            element.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
